@@ -51,7 +51,7 @@ void inicializa(T &vetor, long long int tamVetor, int valor) {
     }
 }
 
-void *tarefa(void *arg) {
+void *tarefa(void * arg) {
 
     int i_local;
 
@@ -69,7 +69,7 @@ void *tarefa(void *arg) {
 }
 
 int random() {
-    int r = 1.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10000 - 1)));
+    int r = (rand() % tamanhoVetor+1) + tamanhoVetor;
     return r;
 }
 
@@ -161,16 +161,12 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    args = new threadArgs[numeroDeThreads];
-    if (!args) {
-        printf("Não conseguiu alocar\n");
-        return 0;
-    }
+
     pthread_mutex_init(&bastao, nullptr);
 
     //criar threads
     for (int i = 0; i < numeroDeThreads; i++) {
-        if (pthread_create(&tid[i], nullptr, tarefa, (void *) &args[i])) {
+        if (pthread_create(&tid[i], nullptr, tarefa, nullptr) ){
             printf("Erro ao criar as threads\n");
             break;
         }
@@ -194,7 +190,6 @@ int main(int argc, char *argv[]) {
     liberarMemoriaVetor(vetorSaidaSequencial, tamanhoVetor);
     liberarMemoriaVetor(vetorSaidaConcorrente, tamanhoVetor);
     pthread_mutex_destroy(&bastao);
-    delete[] args;
     delete[] tid;
     GET_TIME(fim);
     delta = fim - inicio;
