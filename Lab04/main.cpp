@@ -57,17 +57,15 @@ void *tarefa(void *arg) {
 
     do{
         pthread_mutex_lock(&bastao);
-        i_local = i_global;
-        i_global++;
+        i_local = i_global; i_global++;
         pthread_mutex_unlock(&bastao);
-        if (ehPrimo(vetorEntrada[i_local])) {
-            vetorSaidaConcorrente[i_local] = sqrt(vetorEntrada[i_local]);
-        } else {
-            vetorSaidaConcorrente[i_local] = vetorEntrada[i_local];
-        }
+        if (ehPrimo(vetorEntrada[i_local])) vetorSaidaConcorrente[i_local] = sqrt(vetorEntrada[i_local]);
+        else vetorSaidaConcorrente[i_local] = vetorEntrada[i_local];
+
     }while ( i_local  < tamanhoVetor);
 
     pthread_exit(nullptr);
+    return nullptr;
 }
 
 int random() {
@@ -157,7 +155,6 @@ int main(int argc, char *argv[]) {
     GET_TIME(inicio);
     // Alocação das estruturas
     tid = new pthread_t[numeroDeThreads];
-    pthread_mutex_init(&bastao, nullptr);
 
     if (!tid) {
         printf("Não conseguiu alocar\n");
@@ -169,6 +166,7 @@ int main(int argc, char *argv[]) {
         printf("Não conseguiu alocar\n");
         return 0;
     }
+    pthread_mutex_init(&bastao, nullptr);
 
     //criar threads
     for (int i = 0; i < numeroDeThreads; i++) {
