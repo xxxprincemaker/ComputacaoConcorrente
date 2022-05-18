@@ -1,0 +1,6 @@
+C:/Users/VipSo/Documents/Lab05/cmake-build-debug/CMakeFiles/Lab05.dir
+C:/Users/VipSo/Documents/Lab05/cmake-build-debug/CMakeFiles/byehello.dir
+C:/Users/VipSo/Documents/Lab05/cmake-build-debug/CMakeFiles/hellobye.dir
+C:/Users/VipSo/Documents/Lab05/cmake-build-debug/CMakeFiles/printX.dir
+C:/Users/VipSo/Documents/Lab05/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/VipSo/Documents/Lab05/cmake-build-debug/CMakeFiles/rebuild_cache.dir

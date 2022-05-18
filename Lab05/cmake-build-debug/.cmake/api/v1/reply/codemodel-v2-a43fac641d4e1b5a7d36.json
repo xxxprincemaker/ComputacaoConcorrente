@@ -1,0 +1,87 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Lab05",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Lab05::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Lab05-Debug-dad5abcf3dae67e3bd2f.json",
+					"name" : "Lab05",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "byehello::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-byehello-Debug-0d901fa7a6c016db694b.json",
+					"name" : "byehello",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "hellobye::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-hellobye-Debug-019918b5f4d216fbd59b.json",
+					"name" : "hellobye",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "printX::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-printX-Debug-55b42023a16b74325b1e.json",
+					"name" : "printX",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/VipSo/Documents/Lab05/cmake-build-debug",
+		"source" : "C:/Users/VipSo/Documents/Lab05"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
