@@ -4,7 +4,8 @@
 
 using namespace std;
 
-int     *vetorEntrada;
+
+int *vetorEntrada;
 double *vetorSaidaSequencial;
 double *vetorSaidaConcorrente;
 
@@ -17,7 +18,7 @@ long long int tamanhoVetor;
 //Cria estrutura para realizar Threads.
 typedef struct {
     int id;
-//    double *vetorSaidaConcorrente;
+    double *vetorSaidaConcorrente;
 } threadArgs;
 
 int ehPrimo(long long int n) {
@@ -45,34 +46,29 @@ int alocaMemoria(T *&vetor, long long int tamVetor) {
 
 template<typename T>
 void inicializa(T &vetor, long long int tamVetor, int valor) {
-    for (long long int i = 0; i < tamVetor; i++) {
+    for (long long int i = 0; i < tamVetor; ++i) {
         vetor[i] = valor;
     }
 }
 
 void *tarefa(void * arg) {
-    int i_local;  //identificador de thread local
 
-    //sincronização utilizando exclusao mutua com bloqueio
-    pthread_mutex_lock(&bastao);
-    i_local = i_global; i_global++;
-    pthread_mutex_unlock(&bastao);
+    int i_local;
 
-    while (i_local < tamanhoVetor) {
-        if (ehPrimo(vetorEntrada[i_local]))
-            vetorSaidaConcorrente[i_local] = sqrt(vetorEntrada[i_local]);
-        else
-            vetorSaidaConcorrente[i_local] = vetorEntrada[i_local];
-
-        //sincronização utilizando exclusao mutua com bloqueio
+    do{
         pthread_mutex_lock(&bastao);
         i_local = i_global; i_global++;
         pthread_mutex_unlock(&bastao);
-    }
-    pthread_exit(NULL);
+        if (ehPrimo(vetorEntrada[i_local])) vetorSaidaConcorrente[i_local] = sqrt(vetorEntrada[i_local]);
+        else vetorSaidaConcorrente[i_local] = vetorEntrada[i_local];
+
+    }while ( i_local  < tamanhoVetor);
+
+    pthread_exit(nullptr);
+    return nullptr;
 }
 
-int randomx() {
+int random() {
     int r = (rand() % tamanhoVetor+1) + tamanhoVetor;
     return r;
 }
@@ -81,16 +77,14 @@ template<typename T>
 void inicializa(T &vetor, long long int tamVetor) {
     int valor;
     for (long long int i = 0; i < tamVetor; i++) {
-        valor = randomx();
+        valor = random();
         vetor[i] = valor;
     }
 }
 
 template<typename T>
 void liberarMemoriaVetor(T *&vetor, long long int tamanhoMatrix) {
-    delete [] vetorEntrada;
-    delete [] vetorSaidaSequencial;
-    delete [] vetorSaidaConcorrente;
+    delete[] vetor;
 }
 
 int corretude(long long int tamanhoVetor) {
@@ -122,7 +116,8 @@ int main(int argc, char *argv[]) {
     pthread_t *tid;
     threadArgs *args;
 
-    tamanhoVetor = std::atoll(argv[1]);
+
+    tamanhoVetor = atoll(argv[1]);
     numeroDeThreads = std::stoi(argv[2]);
 
     GET_TIME(inicio);
@@ -143,6 +138,7 @@ int main(int argc, char *argv[]) {
     alocaMemoria(vetorSaidaSequencial, tamanhoVetor);
     alocaMemoria(vetorSaidaConcorrente, tamanhoVetor);
     inicializa(vetorEntrada, tamanhoVetor);
+
 
     GET_TIME(fim);
     delta = fim - inicio;
@@ -191,8 +187,10 @@ int main(int argc, char *argv[]) {
     GET_TIME(inicio);
     corretude(tamanhoVetor);
     liberarMemoriaVetor(vetorEntrada, tamanhoVetor);
+    liberarMemoriaVetor(vetorSaidaSequencial, tamanhoVetor);
+    liberarMemoriaVetor(vetorSaidaConcorrente, tamanhoVetor);
     pthread_mutex_destroy(&bastao);
-    delete [] tid;
+    delete[] tid;
     GET_TIME(fim);
     delta = fim - inicio;
     cout << "O tempo de finalizacao (segundos): " << delta << endl;

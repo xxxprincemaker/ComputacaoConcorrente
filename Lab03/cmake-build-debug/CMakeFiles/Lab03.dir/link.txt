@@ -1,3 +1,0 @@
-C:\Users\VipSo\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\221.5787.29\bin\cmake\win\bin\cmake.exe -E rm -f CMakeFiles\Lab03.dir/objects.a
-C:\Users\VipSo\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\221.5787.29\bin\mingw\bin\ar.exe qc CMakeFiles\Lab03.dir/objects.a @CMakeFiles\Lab03.dir\objects1.rsp
-C:\Users\VipSo\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\221.5787.29\bin\mingw\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\Lab03.dir/objects.a -Wl,--no-whole-archive -o Lab03.exe -Wl,--out-implib,libLab03.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Lab03.dir\linklibs.rsp
