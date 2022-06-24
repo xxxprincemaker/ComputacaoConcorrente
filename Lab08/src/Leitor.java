@@ -13,9 +13,7 @@ class Leitor extends Thread {
         for (;;) {
             try {
                 this.monitor.EntraLeitor(this.id);
-//                System.out.println("O " + numero + " da Thread: " + this.id + " " + this.numero.isPar());
-                System.out.println("le.paridade("+this.numero.getNumero()+","
-                        +this.numero.isPar()+")");
+                this.numero.imprimeParidade();
                 this.monitor.SaiLeitor(this.id);
                 sleep(1500);
             } catch (InterruptedException e) {

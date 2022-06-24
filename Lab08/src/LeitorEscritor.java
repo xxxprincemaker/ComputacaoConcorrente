@@ -14,7 +14,7 @@ class LeitorEscritor extends Thread {
         for (;;) {
             try {
                 this.monitor.EntraLeitor(this.id);
-                System.out.println("le.numero("+this.numero.getNumero()+")");
+                this.numero.imprimeNumero();
                 this.monitor.SaiLeitor(this.id);
                 for(i = 0; i < 10000000; i++) {j=j/2;} // Processamento bobo
                 this.monitor.EntraEscritor(this.id);

@@ -18,6 +18,15 @@ class Numero {
         this.num = n;
     }
 
+    public void imprimeNumero(){
+        System.out.println("le.numero("+this.getNumero()+")");
+    }
+
+    public void imprimeParidade(){
+        System.out.println("le.paridade("+this.getNumero()+","
+                +this.isPar()+")");
+    }
+
     @Override
     public String toString() {
         return "Numero: " + num;
