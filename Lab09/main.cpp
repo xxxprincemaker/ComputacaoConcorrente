@@ -3,7 +3,7 @@
 #include <iostream>
 #include <semaphore.h>
 
-#define NTHREADS 4
+#define NTHREADS 5
 
 typedef struct{
     int id; //identificador do elemento que a thread ira processar
