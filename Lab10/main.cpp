@@ -28,7 +28,7 @@ typedef struct{
         sem_post(&texto);
         std::cout << "Thread [" << args->id << "] Esta Lendo" << std::endl;
         for(int i = 0; i < 777777777.7; i++) int k = i+1; // Processamento Bobo
-        std::cout << "Thread [" << args->id << "] Leu" << std::endl;
+        std::cout << "Thread [" << args->id << "] Terminou de Ler" << std::endl;
         sem_wait(&em_l); varLeitor--;
         if(varLeitor == 0) {
             sem_post(&escr);
@@ -52,11 +52,11 @@ typedef struct{
         std::cout << "Thread [" << args->id << "] Esta Pensando no Que vai Escrever" << std::endl;
         std::cout << "Thread [" << args->id << "] Esta Escrevendo" << std::endl;
         for(int i = 0; i < 777777777.7; i++) int k = i+1; // Processamento Bobo
-        std::cout << "Thread [" << args->id << "] Escreveu" << std::endl;
+        std::cout << "Thread [" << args->id << "] Terminou de Escrever" << std::endl;
         sem_post(&escr); //Fim Mutex Escritor
         sem_wait(&em_e);
-        if (varEscritor > 1) for(int w = 0; w < E; w++) varEscritor--;
-        else varEscritor--; // Por algum motivo estava acumulando var escritor
+        if (varEscritor > 1) for(int w = 0; w < E-2; w++) varEscritor--; // Por algum motivo estava acumulando var escritor
+        std::cout << varEscritor << std::endl;
         if(varEscritor == 0) {
             sem_post(&leit);
         }
