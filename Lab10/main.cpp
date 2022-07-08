@@ -1,104 +1,99 @@
 #include <iostream>
 #include <pthread.h>
 #include <semaphore.h>
+#include <unistd.h>
 
-#define L 3
-#define E 4
+#define L 3 //threads leitoras
+#define E 5 //threads escritoras
 #define NTHREADS L+E
 
-sem_t em_e, em_l, escr, leit, texto; //semaforos
-int varEscritor=0, varLeitor=0; //globais
+using namespace std;
 
-typedef struct{
-    int id; //identificador do elemento que a thread ira processar
-} tArgs;
+/* Variaveis globais */
+int varContadorLeitor=0;
+int varContadorEscritor=0;
 
-[[noreturn]] void *leitor(void * arg){
-    auto *args = (tArgs*) arg;
-    while (1){
+/* Semáforos */
+sem_t em_e, em_l, escr, leit;
 
+/* Thread Leitora */
+void * leitor (void * arg) {
+    int *id = (int *) arg;
+    while(true) {
         sem_wait(&leit);
         sem_wait(&em_l);
-        varLeitor++;
-        if(varLeitor == 1) sem_wait(&escr);
+        cout<< "L["<< *id << "] quer ler" << endl;
+        varContadorLeitor++; if(varContadorLeitor == 1) sem_wait(&escr);
         sem_post(&em_l);
         sem_post(&leit);
-        sem_wait(&texto);
-        std::cout << "Thread [" << args->id << "] Esta se Preparando para Ler" << std::endl;
-        sem_post(&texto);
-        std::cout << "Thread [" << args->id << "] Esta Lendo" << std::endl;
-        for(int i = 0; i < 777777777.7; i++) int k = i+1; // Processamento Bobo
-        std::cout << "Thread [" << args->id << "] Terminou de Ler" << std::endl;
-        sem_wait(&em_l); varLeitor--;
-        if(varLeitor == 0) {
-            sem_post(&escr);
-        }
+        cout<< "L["<< *id << "] esta lendo" << endl;
+        //le...
+        sem_wait(&em_l);
+        cout<< "L["<< *id << "] terminou de ler" << endl;
+        varContadorLeitor--; if(varContadorLeitor == 0) sem_post(&escr);
         sem_post(&em_l);
+        sleep(1);
     }
+    delete arg;
+    pthread_exit(nullptr);
 }
 
-[[noreturn]] void *escritor(void * arg){
-    auto *args = (tArgs*) arg;
-
-    while (1){
-
+/* Thread Escritora */
+void * escritor (void * arg) {
+    int *id = (int *) arg;
+    while(true) {
         sem_wait(&em_e);
-        varEscritor++;
-        if(varEscritor == 1) {
-            sem_wait(&leit);
-        }
+        varContadorEscritor++; if(varContadorEscritor == 1) sem_wait(&leit);
+        cout<< "E["<< *id << "] quer escrever" << endl;
+        cout<< "E["<< *id << "] esta esperando" << endl;
         sem_post(&em_e);
-        sem_wait(&escr); //Mutex Escritor
-        std::cout << "Thread [" << args->id << "] Esta Pensando no Que vai Escrever" << std::endl;
-        std::cout << "Thread [" << args->id << "] Esta Escrevendo" << std::endl;
-        for(int i = 0; i < 777777777.7; i++) int k = i+1; // Processamento Bobo
-        std::cout << "Thread [" << args->id << "] Terminou de Escrever" << std::endl;
-        sem_post(&escr); //Fim Mutex Escritor
+        sem_wait(&escr);
+        cout<< "E["<< *id << "] esta escrevendo" << endl;
+        //escr...
+        cout<< "E["<< *id << "] terminou de escrever" << endl;
+        sem_post(&escr);
         sem_wait(&em_e);
-        if (varEscritor > 1) for(int w = 0; w < E-2; w++) varEscritor--; // Por algum motivo estava acumulando var escritor
-        std::cout << varEscritor << std::endl;
-        if(varEscritor == 0) {
-            sem_post(&leit);
-        }
+        varContadorEscritor--; if(varContadorEscritor == 0) sem_post(&leit);
         sem_post(&em_e);
+        sleep(1);
     }
+    delete arg;
+    pthread_exit(nullptr);
 }
 
-int main() {
-    pthread_t threads[NTHREADS];
+/* Funcao principal */
+int main(int argc, char *argv[]) {
+    int i;
+    pthread_t tid[NTHREADS];   // Threads totais.
+    int id[NTHREADS];         //Identificador das Threads
 
-    /* Inicilaiza o mutex (lock de exclusao mutua) varEscritor a variavel de condicao */
-    sem_init(&em_e, 0, 1);
-    sem_init(&texto, 0, 1);
+    // Inicia os semáforos
     sem_init(&em_l, 0, 1);
-    sem_init(&escr, 0, 1);
+    sem_init(&em_e, 0, 1);
     sem_init(&leit, 0, 1);
+    sem_init(&escr, 0, 1);
 
-    tArgs *args = new tArgs[NTHREADS];
-    if(!args) {std::cout << "Erro ao alocar Memoria"; return 2;}
-
-    /* Cria as threads Escritoras*/
-    /* Cria as threads Leitoras*/
-    for(int i=0; i < L; i++){
-        (args+i)->id = i+1;
-        pthread_create(&threads[i], nullptr, reinterpret_cast<void *(*)(void *)>(leitor), (void*) (args + i));
+    //cria as threads leitoras
+    for(i=0; i<L; i++) {
+        id[i] = i+1;
+        if(pthread_create(&tid[i], nullptr, leitor, (void *) &id[i])) exit(-1);
     }
 
-    for(int i=0; i < E; i++){
-        (args+i+L)->id = i+1;
-        pthread_create(&threads[i], nullptr, reinterpret_cast<void *(*)(void *)>(escritor), (void*) (args + i + L));
+    //cria as threads escritoras
+    for(i=0; i<E; i++) {
+        id[i+L] = i+1;
+        if(pthread_create(&tid[i+L], nullptr, escritor, (void *) &id[i+L])) exit(-1);
     }
 
     /* Espera todas as threads completarem */
-    for (unsigned long long thread : threads) {
-        pthread_join(thread, nullptr);
+    for (pthread_t tids : tid) {
+        pthread_join(tids, nullptr);
     }
 
-    /* Desaloca variaveis varEscritor termina */
-    delete [] args;
-    sem_destroy(&em_e);
-    sem_destroy(&texto);
+    /* Desaloca variaveis semafaros termina */
     sem_destroy(&em_l);
-    sem_destroy(&escr);
+    sem_destroy(&em_e);
     sem_destroy(&leit);
+    sem_destroy(&escr);
+
 }
