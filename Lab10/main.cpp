@@ -65,7 +65,7 @@ void * escritor (void * arg) {
 int main(int argc, char *argv[]) {
     int i;
     pthread_t tid[NTHREADS];   // Threads totais.
-    int id[NTHREADS];         //Identificador das Threads
+    int identificadorThread[NTHREADS];         //Identificador das Threads
 
     // Inicia os semáforos
     sem_init(&em_l, 0, 1);
@@ -75,14 +75,14 @@ int main(int argc, char *argv[]) {
 
     //cria as threads leitoras
     for(i=0; i<L; i++) {
-        id[i] = i+1;
-        if(pthread_create(&tid[i], nullptr, leitor, (void *) &id[i])) exit(-1);
+        identificadorThread[i] = i + 1;
+        if(pthread_create(&tid[i], nullptr, leitor, (void *) &identificadorThread[i])) exit(-1);
     }
 
     //cria as threads escritoras
     for(i=0; i<E; i++) {
-        id[i+L] = i+1;
-        if(pthread_create(&tid[i+L], nullptr, escritor, (void *) &id[i+L])) exit(-1);
+        identificadorThread[i + L] = i + 1;
+        if(pthread_create(&tid[i+L], nullptr, escritor, (void *) &identificadorThread[i + L])) exit(-1);
     }
 
     /* Espera todas as threads completarem */
