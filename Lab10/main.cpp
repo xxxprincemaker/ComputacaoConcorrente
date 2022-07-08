@@ -3,8 +3,10 @@
 #include <semaphore.h>
 #include <unistd.h>
 
-#define L 3 //threads leitoras
-#define E 5 //threads escritoras
+//threads leitoras
+#define L 3
+#define E 5 \
+//threads escritoras
 #define NTHREADS L+E
 
 using namespace std;
@@ -27,7 +29,7 @@ void * leitor (void * arg) {
         sem_post(&em_l);
         sem_post(&leit);
         cout<< "L["<< *id << "] esta lendo" << endl;
-        //le...
+        //Le Algo!
         sem_wait(&em_l);
         cout<< "L["<< *id << "] terminou de ler" << endl;
         varContadorLeitor--; if(varContadorLeitor == 0) sem_post(&escr);
@@ -49,7 +51,7 @@ void * escritor (void * arg) {
         sem_post(&em_e);
         sem_wait(&escr);
         cout<< "E["<< *id << "] esta escrevendo" << endl;
-        //escr...
+        //Escreve Algo!
         cout<< "E["<< *id << "] terminou de escrever" << endl;
         sem_post(&escr);
         sem_wait(&em_e);
@@ -64,7 +66,7 @@ void * escritor (void * arg) {
 /* Funcao principal */
 int main(int argc, char *argv[]) {
     int i;
-    pthread_t tid[NTHREADS];   // Threads totais.
+    pthread_t threads[NTHREADS];   // Threads totais.
     int identificadorThread[NTHREADS];         //Identificador das Threads
 
     // Inicia os semáforos
@@ -76,18 +78,18 @@ int main(int argc, char *argv[]) {
     //cria as threads leitoras
     for(i=0; i<L; i++) {
         identificadorThread[i] = i + 1;
-        if(pthread_create(&tid[i], nullptr, leitor, (void *) &identificadorThread[i])) exit(-1);
+        if(pthread_create(&threads[i], nullptr, leitor, (void *) &identificadorThread[i])) exit(-1);
     }
 
     //cria as threads escritoras
     for(i=0; i<E; i++) {
         identificadorThread[i + L] = i + 1;
-        if(pthread_create(&tid[i+L], nullptr, escritor, (void *) &identificadorThread[i + L])) exit(-1);
+        if(pthread_create(&threads[i + L], nullptr, escritor, (void *) &identificadorThread[i + L])) exit(-1);
     }
 
     /* Espera todas as threads completarem */
-    for (pthread_t tids : tid) {
-        pthread_join(tids, nullptr);
+    for (pthread_t thread : threads) {
+        pthread_join(thread, nullptr);
     }
 
     /* Desaloca variaveis semafaros termina */
